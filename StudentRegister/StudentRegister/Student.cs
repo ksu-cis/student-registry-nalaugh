@@ -10,20 +10,46 @@ namespace StudentRegister
     /// <summary>
     /// A class representing a student
     /// </summary>
-    public class Student
+    public class Student : INotifyPropertyChanged
     {
         private List<CourseResult> courseHistory;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+
+        private void NotifyPropertyChanged(string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        private string first;
+        private string last;
 
         /// <summary>
         /// Gets and sets the first name
         /// </summary>
-        public string First { get; set; }
-
+        public string First
+        {
+            get { return first; }
+            set
+            {
+                first = value;
+               /// NotifyPropertyChanged("First");
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("First"));
+            }
+        }
         /// <summary>
         /// Gets and sets the last name
         /// </summary>
-        public string Last { get; set; }
-
+        public string Last
+        {
+            get { return last; }
+            set
+            {
+                last = value;
+               // NotifyPropertyChanged("Last");
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Last"));
+            }
+        }
         /// <summary>
         /// Gets the course history
         /// </summary>
@@ -84,6 +110,23 @@ namespace StudentRegister
             First = first;
             Last = last;
             courseHistory = new List<CourseResult>();
+        }
+
+        /// <summary>
+        /// overided the to sting method
+        /// </summary>
+        /// <returns>the prpper informaiton for the window to display</returns>
+        public override string ToString()
+        {
+                return $"{Last}, {First} ({GPA})";
+        }
+
+
+        public void CourseComplete(string name, uint hours, Grade grade, string semester)
+        {
+            CourseResult cr =new CourseResult(name, hours, grade, semester);
+            courseHistory.Add(cr);
+            NotifyPropertyChanged("GPA");
         }
 
     }
